@@ -11,7 +11,8 @@ import java.util.Random;
 
 public class kmeans {
 
-	static ArrayList<DocumentMetaData> getDocSameCatagory(ArrayList<DocumentMetaData> docs, int clusterID) {
+	static ArrayList<DocumentMetaData> getDocSameCatagory(
+			ArrayList<DocumentMetaData> docs, int clusterID) {
 		ArrayList<DocumentMetaData> temp = new ArrayList<DocumentMetaData>();
 		for (DocumentMetaData doc : docs) {
 			if (doc.getClusterNo() == clusterID) {
@@ -27,23 +28,25 @@ public class kmeans {
 		System.out.println("Getting Data:");
 
 		// Get MetaData
-		MetaDataBuilder MD = new MetaDataBuilder(Constants.DATA_DIRECTORY, Constants.NUMBER_OF_TOP_WORDS,
-				Constants.REMOVE_STOP_WORDS);
+		MetaDataBuilder MD = new MetaDataBuilder(Constants.DATA_DIRECTORY,
+				Constants.NUMBER_OF_TOP_WORDS, Constants.REMOVE_STOP_WORDS);
 		ArrayList<DocumentMetaData> docs = MD.getDocs();
 
-		// System.out.println("Feature Vectors:");
-		// for(DocumentMetaData doc : docs){
-		// doc.printFeatureVector();
-		// }
-		// System.out.println("Features:");
-		// for(DocumentMetaData doc : docs){
-		// doc.printTerms();
-		// }
+//		 System.out.println("Feature Vectors:");
+//		 for(DocumentMetaData doc : docs){
+//		 doc.printFeatureVector();
+//		 }
+		 
+//		 System.out.println("Features:");
+//		 for(DocumentMetaData doc : docs){
+//		 doc.printTerms();
+//		 }
 
 		System.out.println("Running K-Means:");
 
 		Random randomGenerator = new Random();
-		List<DocumentMetaData> ClusterCenters = Arrays.asList(new DocumentMetaData[Constants.NUMBER_OF_CLUSTERS]);
+		List<DocumentMetaData> ClusterCenters = Arrays
+				.asList(new DocumentMetaData[Constants.NUMBER_OF_CLUSTERS]);
 		Map<Integer, Double> TempClusterCenters = new HashMap<Integer, Double>();
 
 		// Select Random Cluster Centers
@@ -51,15 +54,14 @@ public class kmeans {
 
 			int randomIndex = randomGenerator.nextInt(docs.size());
 			ClusterCenters.set(i, docs.get(randomIndex));
-			ClusterCenters.get(i).setPredictedCatagory(ClusterCenters.get(i).getCatagory());
+			ClusterCenters.get(i).setPredictedCatagory(
+					ClusterCenters.get(i).getCatagory());
 			docs.get(randomIndex).setClusterNo(i);
 			TempClusterCenters.put(i, (double) -1);
 
 			// System.out.println("Cluster Catagory:" +
 			// ClusterCenters.get(i).getCatagory() + ":" + "DocID:"
 			// + ClusterCenters.get(i).DocID);
-			
-//			System.out.println(differenceFromOtherClusters(ClusterCenters.get(i),ClusterCenters));
 		}
 
 		int changeInCluster = 0;
@@ -69,10 +71,11 @@ public class kmeans {
 		double newEfficency = 0;
 
 		while (!(iternation < 2000) | !(changeInEfficency < 0.000001)) {
-			System.out.println("Current Run:" + iternation);
-			System.out.println("Current Efficency:" + efficency);
-			System.out.println("Change in clusters:" + changeInCluster);
-			System.out.println("Change in Efficency:" + changeInEfficency);
+			
+//			System.out.println("Current Run:" + iternation);
+//			System.out.println("Current Efficency:" + efficency);
+//			System.out.println("Change in clusters:" + changeInCluster);
+//			System.out.println("Change in Efficency:" + changeInEfficency);
 
 			iternation++;
 			changeInCluster = 0;
@@ -88,7 +91,8 @@ public class kmeans {
 
 				similarityValue = 0;
 				for (DocumentMetaData ClusterCenter : ClusterCenters) {
-					newSimilarityValue = Utilities.similarity(ClusterCenter.getFeatureVector(),
+					newSimilarityValue = Utilities.similarity(
+							ClusterCenter.getFeatureVector(),
 							doc.getFeatureVector());
 
 					// System.out.println("CATAGORY:"+ClusterCenter.catagory+":"+"DOCcluster:"+doc.catagory);
@@ -98,7 +102,8 @@ public class kmeans {
 					if (newSimilarityValue > similarityValue) {
 						similarityValue = newSimilarityValue;
 						doc.setClusterNo(ClusterCenter.getClusterNo());
-						doc.setPredictedCatagory(ClusterCenter.getPredictedCatagory());
+						doc.setPredictedCatagory(ClusterCenter
+								.getPredictedCatagory());
 
 					}
 
@@ -117,12 +122,14 @@ public class kmeans {
 
 				for (int j = i + 1; j < docs.size(); j++) {
 					DocumentMetaData doc2 = docs.get(j);
-					accumulativeCostValue += Utilities.similarity(doc1.getFeatureVector(),
-							doc2.getFeatureVector());
+					accumulativeCostValue += Utilities.similarity(
+							doc1.getFeatureVector(), doc2.getFeatureVector());
 				}
 
-				if (accumulativeCostValue > TempClusterCenters.get(doc1.getClusterNo())) {
-					TempClusterCenters.put(doc1.getClusterNo(), accumulativeCostValue);
+				if (accumulativeCostValue > TempClusterCenters.get(doc1
+						.getClusterNo())) {
+					TempClusterCenters.put(doc1.getClusterNo(),
+							accumulativeCostValue);
 					ClusterCenters.set(doc1.getClusterNo(), doc1);
 					changeInCluster++;
 				}
@@ -136,64 +143,74 @@ public class kmeans {
 		for (DocumentMetaData ClusterCenter : ClusterCenters) {
 			displayTop5Documents(ClusterCenter, docs);
 		}
-		
 		System.out.println("End!");
 		System.exit(0);
 
 	}
 
-		static double differenceFromOtherClusters(DocumentMetaData ClusterCenter, List<DocumentMetaData> clusterCenters) {
-	
-			double similarityWithOtherCluster=0;
-		for(DocumentMetaData otherCluster:clusterCenters){
-			if(ClusterCenter != otherCluster)
-				similarityWithOtherCluster+=Utilities.similarity(ClusterCenter.featureVector, otherCluster.featureVector);
-		}
-		return ( (double)similarityWithOtherCluster/clusterCenters.size() );
-		
-	}
-	static void displayTop5Documents(DocumentMetaData ClusterCenter, ArrayList<DocumentMetaData> docs) {
+	static void displayTop5Documents(DocumentMetaData ClusterCenter,
+			ArrayList<DocumentMetaData> docs) {
 
 		double cosineSimilarityValue = 0;
 		double[] topFileScore = new double[Constants.NUMBER_OF_TOP_DOCUMENTS_IN_CLUSTER];
 		String[] topFileNames = new String[Constants.NUMBER_OF_TOP_DOCUMENTS_IN_CLUSTER];
+	
 		boolean filled = false;
 
 		for (int i = 0; i < topFileNames.length; i++) {
 			topFileNames[i] = "";
 		}
 
+		// System.out.println("*-************************************************************");
+		// System.out.println("Curent Cluster Center: "+ClusterCenter.DocID );
+
 		for (DocumentMetaData doc : docs) {
 			if (doc.clusterID == ClusterCenter.clusterID) {
 
-				cosineSimilarityValue = Utilities.similarity(ClusterCenter.getFeatureVector(),
+				cosineSimilarityValue = Utilities.similarity(
+						ClusterCenter.getFeatureVector(),
 						doc.getFeatureVector());
 
-			}
-			filled = false;
-			for (int i = 0; i < topFileNames.length; i++) {
-				if (topFileNames[i] != "") {
-					topFileNames[i] = doc.DocID;
-					topFileScore[i] = cosineSimilarityValue;
-					filled = true;
-				}
-			}
-			if (!filled) {
+				// System.out.println(cosineSimilarityValue+" "+doc.DocID);
+
+				filled = false;
 				for (int i = 0; i < topFileNames.length; i++) {
-					if (topFileScore[i] < cosineSimilarityValue) {
-						topFileNames[i] = doc.DocID;
-						topFileScore[i] = cosineSimilarityValue;
-						filled = true;
-					}
+					if (!filled)
+						if (topFileNames[i] == "") {
+							topFileNames[i] = doc.DocID;
+							topFileScore[i] = cosineSimilarityValue;
+							filled = true;
+						}
 				}
 
+				
+					for (int i = 0; i < topFileNames.length; i++) {
+						if (!filled) {
+						if (topFileScore[i] < cosineSimilarityValue) {
+							topFileNames[i] = doc.DocID;
+							topFileScore[i] = cosineSimilarityValue;
+							filled = true;
+						}
+					}
+
+				}
 			}
 
 		}
 
-		System.out.println("Top 5 Documents in Cluster Center:" + ClusterCenter.DocID + " are:");
+		int n=5;
+		String s =ClusterCenter.DocID;
+		String upToNCharacters=s.substring(0, Math.min(s.length(), n));
+		
+		System.out.println("Top 5 Documents in Cluster Center:"
+				+ upToNCharacters + " are:");
 		for (int i = 0; i < topFileNames.length; i++) {
-			System.out.println(topFileNames[i] + " ");
+			s =topFileNames[i];
+			
+			 upToNCharacters = s.substring(0, Math.min(s.length(), n));
+			System.out.println(upToNCharacters + " ");
+
+
 		}
 		System.out.println("");
 	}

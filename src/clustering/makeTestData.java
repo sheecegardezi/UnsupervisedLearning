@@ -26,7 +26,7 @@ public class makeTestData {
 			for(int i=0;i<noOfDocumetsPerClass;i++){
 
 				try (Writer writer = new BufferedWriter(
-						new OutputStreamWriter(new FileOutputStream("data/"+catagoryClass+"/"+catagoriesName+"/"+i+".txt"), "utf-8"))) {
+						new OutputStreamWriter(new FileOutputStream("data/"+catagoryClass+"/"+catagoriesName+"/"+catagoriesName+i+".txt"), "utf-8"))) {
 					writer.write(catagoriesName);
 				}	
 			}
@@ -41,5 +41,6 @@ public class makeTestData {
 	public static void main(String[] args) throws IOException {
 
 		makeTestData swc = new makeTestData();
-	}
+		System.out.println("Directories Made!");
+}
 }
